@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lencería Suave | Sábanas, fundas y toallas</title>
+    <meta name="description" content="Lencería Suave: sábanas, fundas de almohada, toallas y ropa de cama de calidad. Envíos a todo el país.">
+</head>
+<body>
+
+    <!-- ===================== HEADER / NAVBAR ===================== -->
+    <header>
+        <h1>Lencería <span>Suave</span></h1>
+
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ===================== HERO / PORTADA ===================== -->
+        <section id="inicio">
+            <h2>Ropa de cama que se siente como dormir en casa</h2>
+            <p>
+                Trabajamos con algodón y lino de primera calidad. Cada prenda pasa
+                por un control de calidad antes de llegar a tu casa.
+            </p>
+            <a href="#productos">Ver productos</a>
+        </section>
+
+        <!-- ===================== CATEGORÍAS ===================== -->
+        <section id="categorias">
+            <h2>Nuestras categorías</h2>
+
+            <ul>
+                <li>
+                    <h3>Sábanas</h3>
+                    <p>Juego de sábanas de 2 plazas, 3 plazas y matrimonales.</p>
+                </li>
+                <li>
+                    <h3>Fundas de almohada</h3>
+                    <p>Suaves, con cierre y disponibles en varios colores.</p>
+                </li>
+                <li>
+                    <h3>Toallas</h3>
+                    <p>De baño, de mano y toallas de playa con drying rápido.</p>
+                </li>
+                <li>
+                    <h3>Colchas y edredones</h3>
+                    <p>Para todas las estaciones, fillings livianos o térmicos.</p>
+                </li>
+                <li>
+                    <h3>Protectores y fundas</h3>
+                    <p>Protectores de colchón y fundas de plaza.</p>
+                </li>
+                <li>
+                    <h3>Almohadas</h3>
+                    <p>De pluma, de fibra y Memory Foam.</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ===================== PRODUCTOS DESTACADOS ===================== -->
+        <section id="productos">
+            <h2>Productos destacados</h2>
+
+            <article>
+                <h3>Juego de Sábanas 2 plazas</h3>
+                <img src="img/sabanas-2-plazas.jpg" alt="Juego de sábanas para cama de dos plazas de color blanco">
+                <p><strong>Precio:</strong> $18.500</p>
+                <p>100% algodón. Incluye juego completo con funda de almohada.</p>
+                <button type="button">Comprar</button>
+            </article>
+
+            <article>
+                <h3>Juego de Sábanas Matrimonial</h3>
+                <img src="img/sabanas-matrimonial.jpg" alt="Juego de sábanas color beige para cama matrimonial">
+                <p><strong>Precio:</strong> $24.000</p>
+                <p>Tela 180 g/m², muy resistente. Lavado a máquina.</p>
+                <button type="button">Comprar</button>
+            </article>
+
+            <article>
+                <h3>Set de Toallas (3 piezas)</h3>
+                <img src="img/set-toallas.jpg" alt="Set de tres toallas de baño verdes">
+                <p><strong>Precio:</strong> $12.900</p>
+                <p>Toalla de baño, de mano y de tocador. Absorción alta.</p>
+                <button type="button">Comprar</button>
+            </article>
+
+            <article>
+                <h3>Edredón Invierno</h3>
+                <img src="img/edredon.jpg" alt="Edredón grueso de color gris para invierno">
+                <p><strong>Precio:</strong> $32.000</p>
+                <p>Relleno térmico de 350 g. Ideal para clima frío.</p>
+                <button type="button">Comprar</button>
+            </article>
+
+        </section>
+
+        <!-- ===================== NOSOTROS ===================== -->
+        <section id="nosotros">
+            <h2>Sobre nosotros</h2>
+            <p>
+                Somos una familia que hace más de 10 años que trabaja con textiles.
+                Nos dedicamos a importar y distribuir sábanas, toallas y ropa de cama
+                con precios mayoristas.
+            </p>
+
+            <h3>Por qué elegirnos</h3>
+            <ul>
+                <li>Envíos a todo el país</li>
+                <li>Cambios sin costo dentro de los 30 días</li>
+                <li>Aceptamos tarjeta, débito y efectivo</li>
+                <li>Descuentos por mayorista para revendedores</li>
+            </ul>
+        </section>
+
+        <!-- ===================== FORMULARIO DE CONTACTO ===================== -->
+        <section id="contacto">
+            <h2>Contacto</h2>
+
+            <!-- method y action se completan cuando agreguemos el formulario real -->
+            <form>
+                <fieldset>
+                    <legend>Dejanos tu consulta</legend>
+
+                    <label for="nombre">Nombre y apellido</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Juan Pérez" required>
+
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" placeholder="juan@correo.com" required>
+
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="11 1234 5678">
+
+                    <label for="asunto">Asunto</label>
+                    <select id="asunto" name="asunto">
+                        <option value="">Seleccionar</option>
+                        <option value="consulta">Consulta de precios</option>
+                        <option value="stock">Stock disponible</option>
+                        <option value="envios">Envíos</option>
+                        <option value="otro">Otro</option>
+                    </select>
+
+                    <label for="mensaje">Mensaje</label>
+                    <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribí tu consulta..."></textarea>
+
+                    <button type="submit">Enviar consulta</button>
+                </fieldset>
+            </form>
+
+            <h3>Dónde Estamos</h3>
+            <address>
+                Av. Corrientes 1234<br>
+                Ciudad Autónoma de Buenos Aires<br>
+                Teléfono: 11 1234 5678<br>
+                Email: <a href="mailto:contacto@lenceriasuave.com">contacto@lenceriasuave.com</a>
+            </address>
+
+            <h3>Horarios de atención</h3>
+            <ul>
+                <li>Lunes a viernes: 9 a 13 h / 15 a 19 h</li>
+                <li>Sábados: 9 a 14 h</li>
+                <li>Domingos: cerrado</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer>
+        <p><strong>Lencería Suave</strong> — Todos los derechos reservados.</p>
+
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+
+        <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">WhatsApp</a></li>
+        </ul>
+    </footer>
+
+</body>
+</html>
