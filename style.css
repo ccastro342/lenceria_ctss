@@ -1,17 +1,17 @@
 /* =========================================================
-   LENCERÍA SUAVE - Hoja de estilos
+   LENCERÍA CTS - Hoja de estilos
    Archivo: style.css
    ========================================================= */
 
 /* ---------- VARIABLES ---------- */
 /* Definimos los colores una sola vez y los reutilizamos */
 :root {
-    --color-texto: #3d3d3d;
-    --color-fondo: #fdfbf7;
-    --color-primario: #8a9a8b;   /* verde salvia */
-    --color-secundario: #c9a227; /* dorado */
+    --color-texto: #2b0f14;    /* rojo sangre */
+    --color-fondo: #faf5f6;    /* rosa pálido */
+    --color-primario: #8e0e4d; /* rojo intenso */
+    --color-secundario: #d81b60; /* fucsia */
     --color-blanco: #ffffff;
-    --color-borde: #e5e0d8;
+    --color-borde: #e8cdd6;
     --fuente: "Segoe UI", Tahoma, sans-serif;
 }
 
@@ -29,6 +29,30 @@ body {
     color: var(--color-texto);
     background-color: var(--color-fondo);
     line-height: 1.6;
+}
+
+
+/* ---------- AVISO DE EDAD ---------- */
+.aviso-edad {
+    background-color: var(--color-texto);
+    color: var(--color-blanco);
+    text-align: center;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    padding: 6px;
+}
+
+
+/* ---------- LEMA (bajo el logo) ---------- */
+.logo h1 {
+    line-height: 1.2;
+}
+
+.lema {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.85;
 }
 
 
@@ -290,6 +314,16 @@ footer a {
 
 footer a:hover {
     color: var(--color-secundario);
+}
+
+/* Aviso legal del pie de página */
+.aviso-legal {
+    font-size: 0.75rem;
+    opacity: 0.75;
+    max-width: 600px;
+    margin: 25px auto 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding-top: 15px;
 }
 
 
