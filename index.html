@@ -33,6 +33,10 @@
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
         </nav>
+
+        <div class="carrito">
+            <button id="btn-carrito" type="button" class="btn-carrito">🛒 <span id="carrito-badge" class="carrito-badge">0</span></button>
+        </div>
     </header>
 
     <main>
@@ -83,33 +87,46 @@
         <section id="productos">
             <h2>Productos destacados</h2>
 
-            <article>
+            <div class="filtros" id="filtros" role="group" aria-label="Filtrar productos por categoria">
+                <button type="button" class="filtro activo" data-filtro="todos">Todos</button>
+                <button type="button" class="filtro" data-filtro="encaje">Encaje</button>
+                <button type="button" class="filtro" data-filtro="corses">Corsés</button>
+                <button type="button" class="filtro" data-filtro="bombachas">Bombachas</button>
+                <button type="button" class="filtro" data-filtro="medias">Medias</button>
+                <button type="button" class="filtro" data-filtro="pijamas">Pijamas</button>
+            </div>
+
+            <article data-categoria="encaje">
                 <h3>Conjunto de Encaje Profil</h3>
                 <p><strong>Precio:</strong> $28.500</p>
                 <p>Encaje francés con forro de algodón. Tiras regulables. Talle S a XL.</p>
-                <button type="button">Comprar</button>
+                <button type="button" class="btn-comprar" data-nombre="Conjunto de Encaje Profil" data-precio="28500">Comprar</button>
             </article>
 
-            <article>
+            <article data-categoria="corses">
                 <h3>Corsé de Satén</h3>
                 <p><strong>Precio:</strong> $34.900</p>
                 <p>Estructura firme con terminaciones en contraste. Moldea sin apretar.</p>
-                <button type="button">Comprar</button>
+                <button type="button" class="btn-comprar" data-nombre="Corsé de Satén" data-precio="34900">Comprar</button>
             </article>
 
-            <article>
+            <article data-categoria="bombachas">
                 <h3>Bombacha de Algodón</h3>
                 <p><strong>Precio:</strong> $9.900</p>
                 <p>Tela de algodón peinado, hipoalergénica. Talle único adaptable.</p>
-                <button type="button">Comprar</button>
+                <button type="button" class="btn-comprar" data-nombre="Bombacha de Algodón" data-precio="9900">Comprar</button>
             </article>
 
-            <article>
+            <article data-categoria="pijamas">
                 <h3>Kimono de Seda</h3>
                 <p><strong>Precio:</strong> $29.900</p>
                 <p>Seda satinada con puntadas en contraste. Talla S a XL.</p>
-                <button type="button">Comprar</button>
+                <button type="button" class="btn-comprar" data-nombre="Kimono de Seda" data-precio="29900">Comprar</button>
             </article>
+
+            <div class="carrito-box">
+                <p id="carrito-total">Carrito: 0 productos · $0</p>
+            </div>
 
         </section>
 
@@ -212,6 +229,9 @@
             para uso personal. No aceptamos pedidos de menores de edad.
         </p>
     </footer>
+
+    <!-- Logica de JavaScript -->
+    <script src="script.js"></script>
 
 </body>
 </html>
