@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito | Lencería CtS</title>
+    <meta name="description" content="Revisá tu carrito de Lencería CtS: elegí talle, cantidad y quitá lo que no quieras.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="age-bar">Este sitio es exclusivo para mayores de 18 años</div>
+
+    <header class="site-header" id="siteHeader">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">
+                <span class="logo-mark">CtS</span>
+                <span class="logo-text">Lencería<small>Creando Tentaciones</small></span>
+            </a>
+            <nav class="nav" id="nav">
+                <a href="index.html">Inicio</a>
+                <a href="productos.html">Productos</a>
+                <a href="nosotros.html">Nosotros</a>
+                <a href="contacto.html">Contacto</a>
+            </nav>
+            <div class="header-actions">
+                <a class="cart-btn active" href="carrito.html" aria-label="Ver carrito">
+                    🛒 Carrito <span class="cart-count">0</span>
+                </a>
+                <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <span class="eyebrow" style="justify-content:center">Paso 2 de 3</span>
+                <h1>Tu <em>carrito</em></h1>
+                <p>Elegí el talle de cada prenda, sumá unidades o quitá lo que no te convenza.</p>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top:20px">
+            <div class="container cart-layout">
+                <div>
+                    <div class="cart-list" id="cartList"></div>
+                    <a href="productos.html" class="btn btn-ghost" style="margin-top:22px">← Seguir comprando</a>
+                </div>
+
+                <aside class="summary-card">
+                    <h3>Resumen</h3>
+                    <div class="summary-row">
+                        <span>Productos</span>
+                        <span id="sumItems">0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Envío</span>
+                        <span>A coordinar</span>
+                    </div>
+                    <div class="summary-row sum-total">
+                        <span>Total</span>
+                        <strong id="sumTotal">$0</strong>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="checkoutBtn">Finalizar pedido</button>
+                    <p class="form-note">
+                        Pago por Nequi, transferencia o contra entrega.<br>
+                        Te confirmamos por WhatsApp.
+                    </p>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a class="logo" href="index.html">
+                        <span class="logo-mark">CtS</span>
+                        <span class="logo-text">Lencería<small>Creando Tentaciones</small></span>
+                    </a>
+                    <p class="footer-about">
+                        Lencería seleccionada a mano en Soacha, Cundinamarca.
+                        Piezas para sentirte bien, todos los días.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navegación</h4>
+                    <a href="index.html">Inicio</a>
+                    <a href="productos.html">Productos</a>
+                    <a href="nosotros.html">Nosotros</a>
+                    <a href="contacto.html">Contacto</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <a href="tel:+5711234567">+57 1 123 4567</a>
+                    <a href="mailto:hola@lenceriacts.com">hola@lenceriacts.com</a>
+                    <a href="https://wa.me/5711234567">WhatsApp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© <span id="year"></span> Lencería CtS — Creando Tentaciones.</span>
+                <span>Sitio exclusivo para mayores de 18 años.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="productos-data.js"></script>
+    <script src="script.js"></script>
+    <script src="carrito.js"></script>
+</body>
+</html>

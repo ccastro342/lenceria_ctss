@@ -2,70 +2,14 @@
    LENCERÍA CTS — Catálogo
    - Buscador en tiempo real
    - Filtros por categoría
-   - Modal de detalle
+   - Modal de detalle con talle y color
+   - Al agregar: guarda y va a carrito.html
    ========================================================= */
 
 (function () {
     'use strict';
 
-    /* ---------- DATOS ---------- */
-    const productos = {
-        sonya: {
-            nombre: 'Sonya',
-            precio: 55000,
-            categoria: 'Encaje',
-            img: 'img/2.jpg',
-            desc: 'Conjunto de encaje rojo con ligas incluidas. Tela elástica con forro suave. Tallas S a XL.',
-            talles: ['S', 'M', 'L', 'XL'],
-            colores: ['Negro', 'Vinotinto', 'Rojo']
-        },
-        irelia: {
-            nombre: 'Irelia',
-            precio: 50000,
-            categoria: 'Conjunto',
-            img: 'img/3.jpg',
-            desc: 'Conjunto con tiras cruzadas y ligas. Encaje elástico que se adapta al cuerpo. Talla única.',
-            talles: ['Única'],
-            colores: ['Negro', 'Azul', 'Rojo', 'Verde', 'Rosa', 'Blanco']
-        },
-        riven: {
-            nombre: 'Riven',
-            precio: 50000,
-            categoria: 'Conjunto',
-            img: 'img/4.jpg',
-            desc: 'Conjunto de encaje con ligas y detalle de moño. Talla única con tiras regulables.',
-            talles: ['Única'],
-            colores: ['Negro', 'Rojo', 'Verde', 'Rosa', 'Blanco', 'Azul']
-        },
-        lilith: {
-            nombre: 'Lilith',
-            precio: 65000,
-            categoria: 'Conjunto',
-            img: 'img/5.jpg',
-            desc: 'Conjunto con short de encaje y transparencias. Copa con aro y tiras ajustables. Tallas S a XL.',
-            talles: ['S', 'M', 'L', 'XL'],
-            colores: ['Negro', 'Azul', 'Rojo', 'Blanco', 'Vinotinto']
-        },
-        xayah: {
-            nombre: 'Xayah',
-            precio: 65000,
-            categoria: 'Pijama',
-            img: 'img/6.jpg',
-            desc: 'Bata corta en tul con detalles de encaje. Ideal para estar en casa o para regalar. Tallas S a XL.',
-            talles: ['S', 'M', 'L', 'XL'],
-            colores: ['Negro', 'Rojo', 'Rosa', 'Blanco', 'Azul']
-        },
-        kayle: {
-            nombre: 'Kayle',
-            precio: 45000,
-            categoria: 'Encaje',
-            img: 'img/7.jpg',
-            desc: 'Conjunto de tiras cruzadas con encaje burgundy. Talla única adaptable.',
-            talles: ['Única'],
-            colores: ['Negro', 'Rosa', 'Rojo', 'Blanco', 'Vinotinto']
-        }
-    };
-
+    const productos = window.PRODUCTOS || {};
     const grid = document.getElementById('productGrid');
     if (!grid) return;
 
@@ -86,8 +30,8 @@
 
             const coincideCat = categoriaActual === 'todos' || cat === categoriaActual;
             const coincideTexto = nombre.includes(textoActual);
-
             const mostrar = coincideCat && coincideTexto;
+
             card.style.display = mostrar ? '' : 'none';
             if (mostrar) visibles++;
         });
@@ -121,7 +65,6 @@
         });
     }
 
-    /* ---------- FILTRO POR URL (?categoria=encaje) ---------- */
     const params = new URLSearchParams(window.location.search);
     const catUrl = params.get('categoria');
     if (catUrl) {
@@ -142,12 +85,23 @@
     const modalClose = document.getElementById('modalClose');
 
     let productoActual = null;
+    let talleElegido = '';
+    let colorElegido = '';
+
+    function marcarOpcion(contenedor, valor) {
+        contenedor.querySelectorAll('.opt').forEach((b) => {
+            b.classList.toggle('selected', b.dataset.value === valor);
+        });
+    }
 
     function abrirModal(id) {
         const p = productos[id];
         if (!p) return;
 
         productoActual = p;
+        talleElegido = p.talles[0] || '';
+        colorElegido = p.colores[0] || '';
+
         modalImg.src = p.img;
         modalImg.alt = 'Conjunto ' + p.nombre;
         modalTitle.textContent = p.nombre;
@@ -155,8 +109,27 @@
         modalDesc.textContent = p.desc;
         modalCat.textContent = p.categoria;
 
-        modalTalles.innerHTML = p.talles.map((t) => `<span class="color-pill">${t}</span>`).join('');
-        modalColores.innerHTML = p.colores.map((c) => `<span class="color-pill">${c}</span>`).join('');
+        modalTalles.innerHTML = p.talles
+            .map((t) => `<button type="button" class="opt selected" data-value="${t}">${t}</button>`)
+            .join('');
+
+        modalColores.innerHTML = p.colores
+            .map((c, i) => `<button type="button" class="opt${i === 0 ? ' selected' : ''}" data-value="${c}">${c}</button>`)
+            .join('');
+
+        modalTalles.querySelectorAll('.opt').forEach((b) => {
+            b.addEventListener('click', () => {
+                talleElegido = b.dataset.value;
+                marcarOpcion(modalTalles, talleElegido);
+            });
+        });
+
+        modalColores.querySelectorAll('.opt').forEach((b) => {
+            b.addEventListener('click', () => {
+                colorElegido = b.dataset.value;
+                marcarOpcion(modalColores, colorElegido);
+            });
+        });
 
         modal.classList.add('open');
         modal.setAttribute('aria-hidden', 'false');
@@ -180,17 +153,41 @@
         });
     }
 
+    /* ---------- AGREGAR E IR AL CARRITO ---------- */
+    function agregarYIr(id, talle, color) {
+        const p = productos[id];
+        if (!p) return;
+
+        window.CTS.agregar({
+            id,
+            nombre: p.nombre,
+            precio: p.precio,
+            img: p.img,
+            talle: talle || '',
+            color: color || '',
+            cantidad: 1
+        });
+
+        window.location.href = 'carrito.html';
+    }
+
     if (modalAdd) {
         modalAdd.addEventListener('click', () => {
-            if (!productoActual) return;
-            window.CTS.agregarAlCarrito({
-                nombre: productoActual.nombre,
-                precio: productoActual.precio,
-                img: productoActual.img
-            });
-            cerrarModal();
+            const p = productoActual;
+            if (!p) return;
+            const id = Object.keys(productos).find((k) => productos[k] === p);
+            agregarYIr(id, talleElegido, colorElegido);
         });
     }
+
+    // Botón rápido de cada tarjeta: agrega sin talle y te manda a elegirlo
+    grid.querySelectorAll('.add-cart').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const card = btn.closest('.product-card');
+            const id = card ? card.dataset.id : '';
+            agregarYIr(id, '', '');
+        });
+    });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') cerrarModal();

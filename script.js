@@ -2,8 +2,8 @@
    LENCERÍA CTS — Lógica compartida
    - Header con scroll
    - Menú móvil
-   - Carrito con localStorage
-   - Animaciones al hacer scroll (reveal)
+   - Carrito (localStorage) con talle, color y cantidad
+   - Animaciones al hacer scroll
    - Formulario de contacto
    ========================================================= */
 
@@ -52,8 +52,6 @@
     window.addEventListener('scroll', revelarVisibles, { passive: true });
     window.addEventListener('resize', revelarVisibles);
     window.addEventListener('load', revelarVisibles);
-
-    // Primera pasada (y de respaldo por si el navegador no dispara scroll)
     revelarVisibles();
     setTimeout(revelarVisibles, 300);
 
@@ -63,24 +61,25 @@
 
     /* ---------- CARRITO ---------- */
     const STORAGE_KEY = 'cts-cart';
-    let cart = [];
 
+    function normalizar(item) {
+        return {
+            id: item.id || '',
+            nombre: item.nombre || 'Producto',
+            precio: Number(item.precio) || 0,
+            img: item.img || 'img/1.jpg',
+            talle: item.talle || '',
+            color: item.color || '',
+            cantidad: Math.max(1, Number(item.cantidad) || 1)
+        };
+    }
+
+    let cart = [];
     try {
-        cart = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        cart = (JSON.parse(localStorage.getItem(STORAGE_KEY)) || []).map(normalizar);
     } catch (e) {
         cart = [];
     }
-
-    const badge = document.getElementById('cartCount');
-    const itemsBox = document.getElementById('cartItems');
-    const totalBox = document.getElementById('cartTotal');
-    const drawer = document.getElementById('cartDrawer');
-    const overlay = document.getElementById('overlay');
-    const openBtn = document.getElementById('cartOpen');
-    const closeBtn = document.getElementById('cartClose');
-    const checkoutBtn = document.getElementById('cartCheckout');
-
-    const formato = (n) => '$' + Number(n).toLocaleString('es-CO');
 
     function guardar() {
         try {
@@ -88,93 +87,46 @@
         } catch (e) { /* modo privado */ }
     }
 
-    function render() {
-        if (badge) badge.textContent = cart.length;
+    function contar() {
+        return cart.reduce((s, i) => s + i.cantidad, 0);
+    }
 
-        if (!itemsBox) return;
+    function renderCount() {
+        document.querySelectorAll('.cart-count').forEach((el) => {
+            el.textContent = contar();
+        });
+    }
 
-        if (!cart.length) {
-            itemsBox.innerHTML = '<p class="cart-empty">Tu carrito está vacío.<br>Mirá el catálogo y elegí algo lindo.</p>';
+    function agregar(item) {
+        const nuevo = normalizar(item);
+        const igual = cart.find(
+            (x) => x.id === nuevo.id && x.talle === nuevo.talle && x.color === nuevo.color
+        );
+
+        if (igual) {
+            igual.cantidad += nuevo.cantidad;
         } else {
-            itemsBox.innerHTML = cart.map((item, i) => `
-                <div class="cart-item">
-                    <img src="${item.img || 'img/1.jpg'}" alt="${item.nombre}">
-                    <div class="cart-item-info">
-                        <h4>${item.nombre}</h4>
-                        <span>${formato(item.precio)}</span>
-                    </div>
-                    <button class="cart-remove" data-index="${i}" aria-label="Quitar ${item.nombre}">×</button>
-                </div>
-            `).join('');
-
-            itemsBox.querySelectorAll('.cart-remove').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    cart.splice(Number(btn.dataset.index), 1);
-                    guardar();
-                    render();
-                });
-            });
+            cart.push(nuevo);
         }
 
-        if (totalBox) {
-            totalBox.textContent = formato(cart.reduce((s, i) => s + Number(i.precio), 0));
-        }
-    }
-
-    function abrirCarrito() {
-        if (!drawer) return;
-        drawer.classList.add('open');
-        drawer.setAttribute('aria-hidden', 'false');
-        overlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function cerrarCarrito() {
-        if (!drawer) return;
-        drawer.classList.remove('open');
-        drawer.setAttribute('aria-hidden', 'true');
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
-    function agregarAlCarrito(producto) {
-        cart.push(producto);
         guardar();
-        render();
-        abrirCarrito();
+        renderCount();
     }
 
-    if (openBtn) openBtn.addEventListener('click', abrirCarrito);
-    if (closeBtn) closeBtn.addEventListener('click', cerrarCarrito);
-    if (overlay) overlay.addEventListener('click', cerrarCarrito);
+    const formato = (n) => '$' + Number(n).toLocaleString('es-CO');
 
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            if (!cart.length) {
-                alert('Tu carrito está vacío.');
-                return;
-            }
-            const total = cart.reduce((s, i) => s + Number(i.precio), 0);
-            alert('¡Gracias por tu pedido!\n\n' + cart.length + ' producto(s)\nTotal: ' + formato(total) +
-                  '\n\nTe contactamos por WhatsApp para coordinar el pago y el envío.');
-        });
-    }
+    renderCount();
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') cerrarCarrito();
-    });
-
-    document.querySelectorAll('.add-cart').forEach((btn) => {
-        btn.addEventListener('click', () => {
-            agregarAlCarrito({
-                nombre: btn.dataset.nombre,
-                precio: Number(btn.dataset.precio),
-                img: btn.dataset.img || 'img/1.jpg'
-            });
-        });
-    });
-
-    render();
+    /* ---------- API PÚBLICA ---------- */
+    window.CTS = {
+        agregar,
+        guardar,
+        contar,
+        renderCount,
+        formato,
+        STORAGE_KEY,
+        get cart() { return cart; }
+    };
 
     /* ---------- FORMULARIO DE CONTACTO ---------- */
     const form = document.getElementById('contactForm');
@@ -191,11 +143,4 @@
             form.reset();
         });
     }
-
-    /* ---------- API PÚBLICA (para productos.js) ---------- */
-    window.CTS = {
-        agregarAlCarrito,
-        abrirCarrito,
-        formato
-    };
 })();
