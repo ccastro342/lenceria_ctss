@@ -35,7 +35,7 @@
                     <span class="empty-ico">🛍️</span>
                     <h3>Tu carrito está vacío</h3>
                     <p>Todavía no elegiste nada. Mirá el catálogo y encontrá tu conjunto.</p>
-                    <a href="productos.html" class="btn btn-primary">Ver catálogo</a>
+                    <a href="../catalogo/" class="btn btn-primary">Ver catálogo</a>
                 </div>`;
         } else {
             list.innerHTML = cart.map((item, i) => {

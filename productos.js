@@ -3,7 +3,7 @@
    - Buscador en tiempo real
    - Filtros por categoría
    - Modal de detalle con talle y color
-   - Al agregar: guarda y va a carrito.html
+   - Al agregar: guarda y va a ../carrito/
    ========================================================= */
 
 (function () {
@@ -168,7 +168,7 @@
             cantidad: 1
         });
 
-        window.location.href = 'carrito.html';
+        window.location.href = '../carrito/';
     }
 
     if (modalAdd) {

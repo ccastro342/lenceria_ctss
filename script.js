@@ -63,11 +63,15 @@
     const STORAGE_KEY = 'cts-cart';
 
     function normalizar(item) {
+        let img = item.img || '../img/1.jpg';
+        // Carritos viejos guardaban "img/2.jpg": se adaptan a la nueva ruta
+        if (img.indexOf('img/') === 0) img = '../' + img;
+
         return {
             id: item.id || '',
             nombre: item.nombre || 'Producto',
             precio: Number(item.precio) || 0,
-            img: item.img || 'img/1.jpg',
+            img: img,
             talle: item.talle || '',
             color: item.color || '',
             cantidad: Math.max(1, Number(item.cantidad) || 1)
