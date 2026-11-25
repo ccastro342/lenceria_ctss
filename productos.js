@@ -126,6 +126,7 @@
     let productoActual = null;
     let talleElegido = '';
     let colorElegido = '';
+    let scrollYAntesDelModal = 0;
 
     function marcarOpcion(contenedor, valor) {
         contenedor.querySelectorAll('.opt').forEach((b) => {
@@ -170,6 +171,8 @@
             });
         });
 
+        scrollYAntesDelModal = window.scrollY;
+        if (window.scrollX) window.scrollTo(0, scrollYAntesDelModal);
         modal.classList.add('open');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
@@ -179,6 +182,7 @@
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        window.scrollTo(0, scrollYAntesDelModal);
     }
 
     grid.querySelectorAll('[data-open]').forEach((el) => {
