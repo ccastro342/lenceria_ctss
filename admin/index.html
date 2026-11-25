@@ -18,25 +18,40 @@
             <a class="btn btn-ghost" href="../carrito/">Volver al carrito</a>
         </div>
     </header>
-    <main class="section">
+    <main class="section admin-main">
         <div class="container admin-container">
-            <div class="section-head"><div><span class="eyebrow">Solo administradores</span><h1 class="section-title">Panel de <em>productos</em></h1><p class="section-sub">Administra el catálogo y sus fotos desde aquí.</p></div></div>
+            <div class="admin-intro"><span class="eyebrow">Espacio de administración</span><h1 class="section-title">Tu tienda, <em>a tu manera</em></h1><p class="section-sub">Actualiza productos y fotos en unos pocos pasos.</p></div>
 
-            <section class="admin-card" id="setupPanel" hidden>
-                <h2>Falta conectar Supabase</h2>
-                <p>El panel está preparado, pero todavía necesita la URL y la clave pública de tu proyecto Supabase. Sigue la guía de configuración del repositorio y completa el archivo <code>supabase-config.js</code>.</p>
-            </section>
+            <div class="admin-login-grid" id="loginLayout">
+                <aside class="admin-welcome">
+                    <div class="admin-welcome-top"><span class="admin-welcome-icon" aria-hidden="true">CtS</span><span class="admin-secure-tag"><span aria-hidden="true">✦</span> Acceso protegido</span></div>
+                    <div class="admin-welcome-copy"><span class="admin-kicker">Lencería CtS</span><h2>Todo lo que tu catálogo necesita, en un solo lugar.</h2><p>Inicia sesión para cuidar cada detalle de tu tienda: productos, precios y fotografías.</p></div>
+                    <div class="admin-welcome-bottom"><span>Creando Tentaciones</span><span>01 — ADMIN</span></div>
+                </aside>
 
-            <section class="admin-card" id="loginPanel" hidden>
-                <h2>Iniciar sesión</h2>
-                <p>Ingresa el correo y la contraseña de la cuenta administradora.</p>
-                <form id="loginForm" class="admin-form">
-                    <label class="admin-field admin-field-wide">Correo electrónico<input id="loginEmail" type="email" autocomplete="username" required></label>
-                    <label class="admin-field admin-field-wide">Contraseña<input id="loginPassword" type="password" autocomplete="current-password" required></label>
-                    <div class="admin-form-actions admin-field-wide"><button class="btn btn-primary" id="loginBtn" type="submit">Iniciar sesión</button></div>
-                </form>
-                <p class="admin-status" id="loginStatus" role="status"></p>
-            </section>
+                <section class="admin-card admin-login-card" id="setupPanel" hidden>
+                    <span class="admin-card-kicker">Configuración</span>
+                    <h2>Conectemos tu tienda</h2>
+                    <p>El panel necesita la URL y la clave pública de tu proyecto Supabase. Completa <code>supabase-config.js</code> siguiendo la guía de configuración.</p>
+                </section>
+
+                <section class="admin-card admin-login-card" id="loginPanel" hidden>
+                    <span class="admin-card-kicker">Bienvenida de vuelta</span>
+                    <h2>Iniciar sesión</h2>
+                    <p>Ingresa los datos de tu cuenta administradora.</p>
+                    <form id="loginForm" class="admin-form admin-login-form">
+                        <label class="admin-field admin-field-wide">Correo electrónico
+                            <span class="admin-input-wrap"><span class="admin-input-icon" aria-hidden="true">✉</span><input id="loginEmail" type="email" autocomplete="username" placeholder="tucorreo@ejemplo.com" required></span>
+                        </label>
+                        <label class="admin-field admin-field-wide">Contraseña
+                            <span class="admin-input-wrap"><span class="admin-input-icon" aria-hidden="true">⌑</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required><button class="password-toggle" id="togglePassword" type="button" aria-label="Mostrar contraseña">Mostrar</button></span>
+                        </label>
+                        <div class="admin-form-actions admin-field-wide"><button class="btn btn-primary admin-login-button" id="loginBtn" type="submit">Entrar al panel <span aria-hidden="true">→</span></button></div>
+                    </form>
+                    <p class="admin-status" id="loginStatus" role="status" aria-live="polite"></p>
+                    <div class="admin-login-foot"><svg class="admin-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></svg> Tu acceso está protegido con Supabase.</div>
+                </section>
+            </div>
 
             <section class="admin-card" id="editorPanel" hidden>
                 <div class="admin-toolbar"><h2>Catálogo</h2><button type="button" class="btn btn-ghost" id="logoutBtn">Cerrar sesión</button></div>

@@ -46,6 +46,7 @@
             throw new Error('Esta cuenta no está autorizada como administradora.');
         }
         await loadProducts();
+        byId('loginLayout').hidden = true;
         loginPanel.hidden = true;
         editorPanel.hidden = false;
     }
@@ -93,6 +94,7 @@
         event.preventDefault();
         const button = byId('loginBtn');
         button.disabled = true;
+        button.textContent = 'Validando acceso…';
         loginStatus.textContent = 'Iniciando sesión…';
         try {
             const { data, error } = await client.auth.signInWithPassword({
@@ -106,15 +108,25 @@
             loginStatus.textContent = error.message || 'No se pudo iniciar sesión.';
         } finally {
             button.disabled = false;
+            button.innerHTML = 'Entrar al panel <span aria-hidden="true">→</span>';
         }
     });
 
     byId('logoutBtn').addEventListener('click', async () => {
         await client.auth.signOut();
+        byId('loginLayout').hidden = false;
         editorPanel.hidden = true;
         loginPanel.hidden = false;
         editorStatus.textContent = '';
         resetForm();
+    });
+
+    byId('togglePassword').addEventListener('click', () => {
+        const input = byId('loginPassword');
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        byId('togglePassword').textContent = show ? 'Ocultar' : 'Mostrar';
+        byId('togglePassword').setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
     });
 
     byId('cancelEditBtn').addEventListener('click', resetForm);
