@@ -13,6 +13,30 @@
     const grid = document.getElementById('productGrid');
     if (!grid) return;
 
+    const escapar = (valor) => String(valor || '').replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+    const slugCategoria = (categoria) => {
+        const c = String(categoria || '').toLowerCase();
+        if (c.includes('pijama')) return 'pijamas';
+        if (c.includes('conjunto')) return 'conjuntos';
+        return 'encaje';
+    };
+    const precio = (valor) => '$' + Number(valor || 0).toLocaleString('es-CO');
+    grid.innerHTML = Object.entries(productos).map(([id, p], i) => `
+        <article class="product-card" data-categoria="${slugCategoria(p.categoria)}" data-id="${escapar(id)}" style="--d:${Math.min(i, 8) * .08}s">
+            <div class="card-media" data-open="${escapar(id)}">
+                <img src="${escapar(p.img)}" alt="${escapar(p.nombre)}">
+                <span class="card-tag">${escapar(p.categoria)}</span>
+            </div>
+            <div class="card-body">
+                <h3>${escapar(p.nombre)}</h3>
+                <p class="card-price">${precio(p.precio)}</p>
+                <p class="card-desc">${escapar(p.desc)}</p>
+                <button class="btn btn-primary add-cart" data-nombre="${escapar(p.nombre)}" data-precio="${Number(p.precio) || 0}" data-img="${escapar(p.img)}">Agregar al carrito</button>
+            </div>
+        </article>`).join('');
+
     const cards = [...grid.querySelectorAll('.product-card')];
     const chips = [...document.querySelectorAll('.chip')];
     const buscador = document.getElementById('buscador');

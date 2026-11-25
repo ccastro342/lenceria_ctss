@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Administración | Lencería CtS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body class="admin-page">
+    <div class="age-bar">Panel de administración de Lencería CtS</div>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="../"><span class="logo-mark">CtS</span><span class="logo-text">Lencería<small>Creando Tentaciones</small></span></a>
+            <a class="btn btn-ghost" href="../carrito/">Volver al carrito</a>
+        </div>
+    </header>
+    <main class="section">
+        <div class="container admin-container">
+            <div class="section-head"><div><span class="eyebrow">Solo administradores</span><h1 class="section-title">Panel de <em>productos</em></h1><p class="section-sub">Los cambios se guardan en GitHub y se publican en la página automáticamente.</p></div></div>
+
+            <section class="admin-card" id="loginPanel">
+                <h2>Conectar con GitHub</h2>
+                <p>Usa un token de acceso personal de tipo <strong>fine-grained</strong> limitado al repositorio <code>ccastro342/lenceria_ctss</code>, con permiso <strong>Contents: Read and write</strong>. El token solo se mantiene en esta pestaña mientras el panel esté abierto.</p>
+                <a class="admin-help-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Crear token en GitHub ↗</a>
+                <form id="loginForm" class="admin-form">
+                    <label class="admin-field">Token de GitHub<input id="githubToken" type="password" autocomplete="off" required placeholder="github_pat_…"></label>
+                    <button class="btn btn-primary" type="submit">Conectar</button>
+                </form>
+                <p class="admin-status" id="loginStatus" role="status"></p>
+            </section>
+
+            <section class="admin-card" id="editorPanel" hidden>
+                <div class="admin-toolbar"><h2>Catálogo</h2><button type="button" class="btn btn-ghost" id="logoutBtn">Desconectar</button></div>
+                <p class="admin-hint">Cada guardado actualiza el catálogo y activa una publicación en GitHub Pages. Puede tardar un par de minutos en verse en la tienda.</p>
+                <div id="productList" class="admin-product-list"></div>
+                <hr class="admin-divider">
+                <h2 id="formTitle">Agregar producto</h2>
+                <form id="productForm" class="admin-form admin-product-form">
+                    <input id="productId" type="hidden">
+                    <label class="admin-field">Nombre<input id="productName" required maxlength="60"></label>
+                    <label class="admin-field">Precio en pesos colombianos<input id="productPrice" type="number" min="1" step="1000" required></label>
+                    <label class="admin-field">Categoría<select id="productCategory"><option>Encaje</option><option>Conjunto</option><option>Pijama</option></select></label>
+                    <label class="admin-field admin-field-wide">Descripción<textarea id="productDescription" rows="3" maxlength="240" required></textarea></label>
+                    <label class="admin-field">Tallas, separadas por coma<input id="productSizes" required placeholder="S, M, L, XL"></label>
+                    <label class="admin-field">Colores, separados por coma<input id="productColors" placeholder="Negro, Rojo"></label>
+                    <label class="admin-field admin-field-wide">Foto del producto (JPG, PNG o WebP; máximo 4 MB)<input id="productImage" type="file" accept="image/jpeg,image/png,image/webp"></label>
+                    <div class="admin-form-actions admin-field-wide"><button class="btn btn-primary" id="saveProductBtn" type="submit">Guardar producto</button><button class="btn btn-ghost" id="cancelEditBtn" type="button" hidden>Cancelar edición</button></div>
+                </form>
+                <p class="admin-status" id="editorStatus" role="status"></p>
+            </section>
+        </div>
+    </main>
+    <script src="../productos-data.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
