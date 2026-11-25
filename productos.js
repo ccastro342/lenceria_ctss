@@ -192,4 +192,8 @@
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') cerrarModal();
     });
+
+    /* ---------- ABRIR PRODUCTO DESDE UN ENLACE (?producto=sonya) ---------- */
+    const productoUrl = params.get('producto');
+    if (productoUrl) abrirModal(productoUrl);
 })();

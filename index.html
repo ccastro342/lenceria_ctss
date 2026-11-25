@@ -63,9 +63,17 @@
                 <div class="hero-visual">
                     <span class="blob blob-1"></span>
                     <span class="blob blob-2"></span>
-                    <div class="arch">
-                        <img src="img/2.jpg" alt="Conjunto de encaje rojo de Lencería CtS">
-                    </div>
+
+                    <button class="arch arch-brand" id="seasonOpen" type="button"
+                            aria-haspopup="dialog" aria-controls="seasonModal"
+                            aria-label="Ver el conjunto de temporada">
+                        <span class="logo-wrap">
+                            <img class="hero-logo" src="img/logo-cts.png"
+                                 alt="Logo de Lencería CtS, Creando Tentaciones">
+                        </span>
+                        <span class="brand-cta">Ver conjunto <span aria-hidden="true">→</span></span>
+                    </button>
+
                     <div class="hero-badge">
                         Colección nueva
                         <strong>6 conjuntos</strong>
@@ -255,6 +263,30 @@
         </div>
     </footer>
 
+    <!-- MODAL: CONJUNTO DE TEMPORADA -->
+    <div class="modal" id="seasonModal" aria-hidden="true">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="seasonTitle">
+            <button class="modal-close" id="seasonClose" aria-label="Cerrar">×</button>
+            <div class="modal-media">
+                <img src="img/2.jpg" alt="Conjunto Sonya de encaje rojo con ligas">
+            </div>
+            <div class="modal-content">
+                <span class="eyebrow">Conjunto de temporada</span>
+                <h3 id="seasonTitle">Sonya</h3>
+                <p class="card-price">$55.000</p>
+                <p>
+                    Encaje rojo con ligas incluidas. Una de las piezas más pedidas
+                    de la colección, disponible en tallas S a XL.
+                </p>
+                <div class="season-actions">
+                    <a href="catalogo/?producto=sonya" class="btn btn-primary btn-block">Ver ficha y talles</a>
+                    <a href="catalogo/" class="btn btn-ghost btn-block">Todo el catálogo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="hero.js"></script>
 </body>
 </html>
