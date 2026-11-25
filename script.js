@@ -33,6 +33,7 @@
             a.addEventListener('click', () => {
                 nav.classList.remove('open');
                 menuBtn.textContent = '☰';
+            menuBtn.setAttribute('aria-expanded', 'false');
             });
         });
     }
