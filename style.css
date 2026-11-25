@@ -1279,22 +1279,26 @@ ul { list-style: none; }
 @media (max-width: 760px) {
     .nav {
         position: fixed;
-        inset: 0 0 auto auto;
-        top: 0;
-        height: 100%;
-        width: min(300px, 82vw);
-        background: var(--cream);
+        inset: 0;
+        width: 100vw;
+        max-width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        padding: max(88px, calc(64px + env(safe-area-inset-top))) 30px 32px;
+        background:
+            radial-gradient(circle at 85% 15%, rgba(181, 75, 104, .10), transparent 38%),
+            var(--cream);
         flex-direction: column;
         gap: 0;
-        padding: 90px 30px 30px;
         transform: translateX(100%);
         transition: transform 0.35s ease;
         z-index: 95;
-        box-shadow: -20px 0 50px rgba(27, 15, 19, 0.18);
+        box-shadow: none;
     }
     .nav.open { transform: translateX(0); }
-    .nav a { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 1rem; }
-    .menu-btn { display: grid; place-items: center; }
+    .nav a { width: min(100%, 520px); margin-inline: auto; padding: 16px 4px; border-bottom: 1px solid var(--border); font-size: 1.05rem; }
+    .menu-btn { position: relative; z-index: 100; display: grid; place-items: center; }
+    body.menu-open { overflow: hidden; }
     .section-head { flex-direction: column; align-items: flex-start; }
     .hero h1 { font-size: clamp(2.4rem, 11vw, 3.4rem); }
     .stats { grid-template-columns: 1fr; }

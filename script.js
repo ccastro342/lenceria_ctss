@@ -23,18 +23,29 @@
     const menuBtn = document.getElementById('menuBtn');
 
     if (menuBtn && nav) {
+        function cerrarMenuMovil() {
+            nav.classList.remove('open');
+            menuBtn.textContent = '☰';
+            menuBtn.setAttribute('aria-expanded', 'false');
+            menuBtn.setAttribute('aria-label', 'Abrir menú');
+            document.body.classList.remove('menu-open');
+            if (!document.querySelector('.modal.open')) document.body.style.overflow = '';
+        }
+
         menuBtn.addEventListener('click', () => {
-            const abierto = nav.classList.toggle('open');
+            const abierto = !nav.classList.contains('open');
+            nav.classList.toggle('open', abierto);
             menuBtn.textContent = abierto ? '×' : '☰';
+            menuBtn.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
             menuBtn.setAttribute('aria-expanded', String(abierto));
+            document.body.classList.toggle('menu-open', abierto);
+            document.body.style.overflow = abierto ? 'hidden' : '';
         });
 
-        nav.querySelectorAll('a').forEach((a) => {
-            a.addEventListener('click', () => {
-                nav.classList.remove('open');
-                menuBtn.textContent = '☰';
-            menuBtn.setAttribute('aria-expanded', 'false');
-            });
+        nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', cerrarMenuMovil));
+        window.addEventListener('pageshow', cerrarMenuMovil);
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && nav.classList.contains('open')) cerrarMenuMovil();
         });
     }
 
