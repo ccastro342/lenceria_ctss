@@ -32,7 +32,9 @@
         if (!cart.length) {
             list.innerHTML = `
                 <div class="empty-cart">
-                    <span class="empty-ico">🛍️</span>
+                    <span class="empty-ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+                    </span>
                     <h3>Tu carrito está vacío</h3>
                     <p>Todavía no elegiste nada. Mirá el catálogo y encontrá tu conjunto.</p>
                     <a href="../catalogo/" class="btn btn-primary">Ver catálogo</a>
