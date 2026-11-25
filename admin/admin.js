@@ -1,80 +1,77 @@
 (function () {
     'use strict';
 
-    const owner = 'ccastro342';
-    const repo = 'lenceria_ctss';
-    const branch = 'main';
-    const dataPath = 'productos-data.js';
-    let token = '';
-    let products = { ...(window.PRODUCTOS || {}) };
-    let dataSha = '';
-
+    const config = window.CTS_SUPABASE_CONFIG || {};
+    const hasConfig = Boolean(config.url && config.publishableKey && window.supabase);
     const byId = (id) => document.getElementById(id);
+    const setupPanel = byId('setupPanel');
     const loginPanel = byId('loginPanel');
     const editorPanel = byId('editorPanel');
     const loginStatus = byId('loginStatus');
     const editorStatus = byId('editorStatus');
     const productList = byId('productList');
+    const bucket = 'catalogo';
+    let client = null;
+    let products = [];
 
-    async function github(path, options) {
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-            ...options,
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
-                ...(options && options.headers)
-            }
-        });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.message || `GitHub respondió ${response.status}.`);
-        return result;
+    if (!hasConfig) {
+        setupPanel.hidden = false;
+        return;
     }
-
-    async function getSha(path) {
-        const file = await github(`${path}?ref=${branch}`);
-        return file.sha;
-    }
-
-    async function saveFile(path, content, message, sha) {
-        return github(path, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message, content, sha, branch })
-        });
-    }
-
-    function encodeBase64(text) {
-        return btoa(unescape(encodeURIComponent(text)));
-    }
-
-    function renderList() {
-        const entries = Object.entries(products);
-        if (!entries.length) {
-            productList.innerHTML = '<p class="admin-hint">Todavía no hay productos. Agrega el primero en el formulario.</p>';
-            return;
-        }
-        productList.innerHTML = entries.map(([id, p]) => `
-            <article class="admin-product">
-                <img src="../${String(p.img || '').replace(/^\.\.\//, '')}" alt="">
-                <div><strong>${escapeHtml(p.nombre)}</strong><span>${escapeHtml(p.categoria)} · $${Number(p.precio || 0).toLocaleString('es-CO')}</span></div>
-                <button type="button" class="btn btn-ghost" data-edit="${escapeHtml(id)}">Editar</button>
-                <button type="button" class="admin-delete" data-delete="${escapeHtml(id)}" aria-label="Eliminar ${escapeHtml(p.nombre)}">Eliminar</button>
-            </article>`).join('');
-    }
+    client = window.supabase.createClient(config.url, config.publishableKey);
 
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
     }
 
+    function slug(value) {
+        return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function parseList(value) {
+        return value.split(',').map((part) => part.trim()).filter(Boolean);
+    }
+
+    async function loadProducts() {
+        const { data, error } = await client.from('products').select('*').order('nombre');
+        if (error) throw error;
+        products = data || [];
+        renderList();
+    }
+
+    async function showEditor(user) {
+        const { data, error } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle();
+        if (error || !data) {
+            await client.auth.signOut();
+            throw new Error('Esta cuenta no está autorizada como administradora.');
+        }
+        await loadProducts();
+        loginPanel.hidden = true;
+        editorPanel.hidden = false;
+    }
+
+    function renderList() {
+        if (!products.length) {
+            productList.innerHTML = '<p class="admin-hint">Todavía no hay productos. Agrega el primero en el formulario.</p>';
+            return;
+        }
+        productList.innerHTML = products.map((p) => `
+            <article class="admin-product">
+                <img src="${escapeHtml(p.img)}" alt="">
+                <div><strong>${escapeHtml(p.nombre)}</strong><span>${escapeHtml(p.categoria)} · $${Number(p.precio || 0).toLocaleString('es-CO')}</span></div>
+                <button type="button" class="btn btn-ghost" data-edit="${escapeHtml(p.id)}">Editar</button>
+                <button type="button" class="admin-delete" data-delete="${escapeHtml(p.id)}" aria-label="Eliminar ${escapeHtml(p.nombre)}">Eliminar</button>
+            </article>`).join('');
+    }
+
     function fillForm(id) {
-        const p = products[id];
+        const p = products.find((item) => item.id === id);
         if (!p) return;
-        byId('productId').value = id;
+        byId('productId').value = p.id;
         byId('productName').value = p.nombre || '';
         byId('productPrice').value = p.precio || '';
         byId('productCategory').value = p.categoria || 'Conjunto';
-        byId('productDescription').value = p.desc || '';
+        byId('productDescription').value = p.descripcion || '';
         byId('productSizes').value = (p.talles || []).join(', ');
         byId('productColors').value = (p.colores || []).join(', ');
         byId('productImage').value = '';
@@ -92,37 +89,31 @@
         byId('cancelEditBtn').hidden = true;
     }
 
-    function parseList(value) {
-        return value.split(',').map((part) => part.trim()).filter(Boolean);
-    }
-
-    function slug(value) {
-        return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    }
-
     byId('loginForm').addEventListener('submit', async (event) => {
         event.preventDefault();
-        token = byId('githubToken').value.trim();
-        loginStatus.textContent = 'Verificando permisos…';
+        const button = byId('loginBtn');
+        button.disabled = true;
+        loginStatus.textContent = 'Iniciando sesión…';
         try {
-            dataSha = await getSha(dataPath);
-            loginPanel.hidden = true;
-            editorPanel.hidden = false;
-            byId('githubToken').value = '';
-            renderList();
+            const { data, error } = await client.auth.signInWithPassword({
+                email: byId('loginEmail').value.trim(),
+                password: byId('loginPassword').value
+            });
+            if (error) throw error;
+            await showEditor(data.user);
+            loginStatus.textContent = '';
         } catch (error) {
-            token = '';
-            loginStatus.textContent = `No se pudo conectar. Revisa que el token tenga acceso de escritura al repositorio. ${error.message}`;
+            loginStatus.textContent = error.message || 'No se pudo iniciar sesión.';
+        } finally {
+            button.disabled = false;
         }
     });
 
-    byId('logoutBtn').addEventListener('click', () => {
-        token = '';
-        products = { ...(window.PRODUCTOS || {}) };
+    byId('logoutBtn').addEventListener('click', async () => {
+        await client.auth.signOut();
         editorPanel.hidden = true;
         loginPanel.hidden = false;
         editorStatus.textContent = '';
-        loginStatus.textContent = 'Sesión desconectada.';
         resetForm();
     });
 
@@ -132,74 +123,69 @@
         const edit = event.target.closest('[data-edit]');
         const remove = event.target.closest('[data-delete]');
         if (edit) fillForm(edit.dataset.edit);
-        if (remove) {
-            const id = remove.dataset.delete;
-            if (!window.confirm(`¿Eliminar ${products[id].nombre} del catálogo?`)) return;
-            delete products[id];
-            try {
-                editorStatus.textContent = 'Guardando catálogo…';
-                const result = await saveFile(dataPath, encodeBase64(`/* Catálogo editable desde el panel de administración */\nwindow.PRODUCTOS = ${JSON.stringify(products, null, 4)};\n`), `Eliminar producto ${id}`, dataSha);
-                dataSha = result.content.sha;
-                renderList();
-                editorStatus.textContent = 'Producto eliminado. La publicación en GitHub Pages ya comenzó.';
-            } catch (error) {
-                products = { ...(window.PRODUCTOS || {}) };
-                renderList();
-                editorStatus.textContent = `No se pudo guardar. ${error.message}`;
-            }
-        }
+        if (!remove) return;
+        const product = products.find((item) => item.id === remove.dataset.delete);
+        if (!product || !window.confirm(`¿Eliminar ${product.nombre} del catálogo?`)) return;
+        editorStatus.textContent = 'Eliminando producto…';
+        const { error } = await client.from('products').delete().eq('id', product.id);
+        if (error) { editorStatus.textContent = `No se pudo eliminar. ${error.message}`; return; }
+        await loadProducts();
+        editorStatus.textContent = 'Producto eliminado.';
     });
 
     byId('productForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const name = byId('productName').value.trim();
-        const id = byId('productId').value || slug(name);
-        if (!id) { editorStatus.textContent = 'Escribe un nombre válido.'; return; }
+        const oldId = byId('productId').value;
+        const id = oldId || slug(name);
+        const previous = products.find((item) => item.id === oldId);
         const file = byId('productImage').files[0];
         if (file && (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 4 * 1024 * 1024)) {
             editorStatus.textContent = 'La foto debe ser JPG, PNG o WebP y pesar máximo 4 MB.';
             return;
         }
-        if (!products[id] && !file) {
-            editorStatus.textContent = 'Selecciona una foto para el producto nuevo.';
-            return;
-        }
+        if (!previous && !file) { editorStatus.textContent = 'Selecciona una foto para el producto nuevo.'; return; }
+
         const button = byId('saveProductBtn');
         button.disabled = true;
         try {
-            let imagePath = products[id] && products[id].img;
+            let imageUrl = previous && previous.img;
             if (file) {
                 editorStatus.textContent = 'Subiendo foto…';
                 const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
-                const path = `img/catalogo-${id}-${Date.now()}.${ext}`;
-                const base64 = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(String(reader.result).split(',')[1]);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-                await saveFile(path, base64, `Subir foto para ${name}`);
-                imagePath = `../${path}`;
+                const path = `${id}/${Date.now()}.${ext}`;
+                const { error: uploadError } = await client.storage.from(bucket).upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+                if (uploadError) throw uploadError;
+                imageUrl = client.storage.from(bucket).getPublicUrl(path).data.publicUrl;
             }
-            products[id] = {
+            editorStatus.textContent = 'Guardando producto…';
+            const record = {
+                id,
                 nombre: name,
                 precio: Number(byId('productPrice').value),
                 categoria: byId('productCategory').value,
-                img: imagePath,
-                desc: byId('productDescription').value.trim(),
+                img: imageUrl,
+                descripcion: byId('productDescription').value.trim(),
                 talles: parseList(byId('productSizes').value),
                 colores: parseList(byId('productColors').value)
             };
-            editorStatus.textContent = 'Guardando producto…';
-            const result = await saveFile(dataPath, encodeBase64(`/* Catálogo editable desde el panel de administración */\nwindow.PRODUCTOS = ${JSON.stringify(products, null, 4)};\n`), `Actualizar producto ${name}`, dataSha);
-            dataSha = result.content.sha;
-            renderList();
+            const { error } = await client.from('products').upsert(record, { onConflict: 'id' });
+            if (error) throw error;
+            await loadProducts();
             resetForm();
-            editorStatus.textContent = 'Producto guardado. La publicación en GitHub Pages ya comenzó.';
+            editorStatus.textContent = 'Producto guardado.';
         } catch (error) {
             editorStatus.textContent = `No se pudo guardar. ${error.message}`;
         } finally {
             button.disabled = false;
         }
     });
+
+    (async function restoreSession() {
+        loginPanel.hidden = false;
+        const { data } = await client.auth.getSession();
+        if (!data.session) return;
+        try { await showEditor(data.session.user); }
+        catch (error) { loginPanel.hidden = false; loginStatus.textContent = error.message; }
+    })();
 })();

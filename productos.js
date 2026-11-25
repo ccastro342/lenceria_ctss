@@ -6,12 +6,27 @@
    - Al agregar: guarda y va a ../carrito/
    ========================================================= */
 
-(function () {
+(async function () {
     'use strict';
 
-    const productos = window.PRODUCTOS || {};
     const grid = document.getElementById('productGrid');
     if (!grid) return;
+
+    let productos = window.PRODUCTOS || {};
+    const config = window.CTS_SUPABASE_CONFIG || {};
+    if (config.url && config.publishableKey && window.supabase) {
+        try {
+            const client = window.supabase.createClient(config.url, config.publishableKey);
+            const { data, error } = await client.from('products').select('*').order('nombre');
+            if (error) throw error;
+            productos = Object.fromEntries((data || []).map((p) => [p.id, {
+                nombre: p.nombre, precio: p.precio, categoria: p.categoria, img: p.img,
+                desc: p.descripcion, talles: p.talles || [], colores: p.colores || []
+            }]));
+        } catch (error) {
+            console.error('No se pudo cargar el catálogo de Supabase; se muestran los datos locales.', error);
+        }
+    }
 
     const escapar = (valor) => String(valor || '').replace(/[&<>"']/g, (c) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
